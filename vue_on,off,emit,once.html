@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>实现vue的on,off,emit,once</title>
+</head>
+<body>
+<script>
+    let vue = (function() {
+        let events = {};
+        return {
+            on (type, fn) {
+                if (!events[type]) {
+                    events[type] = [fn]
+                } else {
+                    events[type].push(fn);
+                }
+            },
+            off (type, fn) {
+                if (!events[type + '$once']) {
+
+                } else{
+                    if (!fn) {
+                        events[type + '$once'].length = 0;
+                    } else {
+                        events[type + '$once'].forEach((val, index, arr) => {
+                            if (val === fn) {
+                                events[type].splice(index, 1)
+                            }
+                        })
+                    }
+                }
+                if (!events[type] || typeof fn !=='function') {
+
+                } else {
+                    if (!fn) {
+                        events[type].length = 0;
+                    } else {
+                        events[type].forEach((val, index, arr) => {
+                            console.log(val);
+                            if (val === fn) {
+                                events[type].splice(index, 1)
+                            }
+                        })
+                    }
+                }
+
+
+
+            },
+            emit (type, fn) {
+                if (!events[type + '$once']) {
+                } else {
+                    events[type + '$once'].forEach((val, index, arr) => {
+                        if (val === fn) {
+                            val();
+                            events[type + '$once'].splice(index, 1);
+                        }
+                    })
+                }
+                if (!events[type] || typeof fn !=='function') {
+                }
+                if (!fn) {
+                    events[type].map((val, index, arr) => {
+                        val()
+                    })
+                }
+                events[type].map((val, index, arr) => {
+                    if(val === fn) {
+                        val()
+                    }
+                })
+            },
+            once (type, fn) {
+                if(!events[type + '$once'] ) {
+                    events[type + '$once'] = [fn];
+                } else {
+                    events[type + '$once'].push(fn);
+                }
+
+            }
+        }
+    })();
+    function firstTest () {
+        console.log('hello domingo');
+    }
+    function secondTest () {
+        console.log('hello enjoy every day');
+    }
+    function thirdTest () {
+        console.log('i feel i love you that do everything');
+    }
+
+    vue.on('click', firstTest);
+    vue.on('click', firstTest);
+    vue.emit('click', firstTest);
+    vue.once('click', secondTest);
+    vue.emit('click', secondTest);
+
+</script>
+</body>
+</html>

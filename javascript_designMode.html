@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js设计模式</title>
+</head>
+<body>
+<script>
+
+    let scope = (function () {
+       let events = {};
+       return {
+           on (name, handler) {
+               let index;
+               if (events[name]) {
+                   index = events[name].push(handler) - 1;
+               } else {
+                   events[name] = [handler];
+                   index = 0
+               }
+           },
+           off (name) {
+               if (! events[name]) return;
+               delete events[name];
+           },
+           emit (name, msg) {
+               if (! events[name]) {
+                   return;
+               }
+               events[name].forEach((v, i) => {
+                   v(msg)
+               })
+           }
+       }
+    });
+
+    let obj ={
+        events : {},
+        on (type, fn) {
+            if (typeof  fn !=='function') return;
+            if (!this.events[type]) {
+                this.events[type] = [fn];
+            } else {
+                this.events[type].push(fn);
+            }
+        },
+        emit (type, msg) {
+            if (!this.events[type]) {
+                return;
+            }
+            this.events[type].forEach((val, index) => {
+                val(msg);
+            })
+        }
+    };
+    obj.on('click', first);
+    obj.on('click', second);
+    obj.on('click', third);
+    function doingSomething () {
+        obj.emit('click', 'hello domingo')
+    }
+    doingSomething();
+    function first (msg) {
+        console.log(msg)
+    }
+    function second () {
+        console.log('domingo')
+    }
+    function third () {
+        console.log('welcome to my live')
+    }
+
+    // function selfOn (ele, type, fn) {
+    //     if (!ele[type]) {
+    //         ele[type] = []
+    //     }
+    //     let a = ele[type];
+    //     for (let i = 0; i < a.length; i++) {
+    //         if (a[i] === fn) return;
+    //     }
+    //     a.push(fn);
+    // }
+    // function selfOff (type,fn) {
+    //
+    // }
+    // function fire(type, e) {
+    //     let a = this[type];
+    //     if (a) {
+    //         for (let i =0; i < a.length; i++ ) {
+    //             a[i].call(this, e);
+    //         }
+    //     }
+    // }
+    // function test () {
+    //     console.log('11111111')
+    // }
+    // selfOn()
+    // function down () {
+    //
+    // }
+    // function move () {
+    //
+    // }
+    // function up () {
+    //
+    // }
+</script>
+</body>
+</html>
